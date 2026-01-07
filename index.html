@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tech Talks Today</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f7f6;
+            color: #333;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        header {
+            text-align: center;
+            padding: 40px 0;
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 40px;
+        }
+        header h1 {
+            font-size: 3em;
+            margin: 0;
+            color: #007BFF;
+        }
+        header p {
+            font-size: 1.2em;
+            color: #555;
+        }
+        .search-container {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        #search-box {
+            width: 50%;
+            padding: 15px;
+            font-size: 1em;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .schedule {
+            list-style: none;
+            padding: 0;
+        }
+        .schedule-item {
+            background-color: #fff;
+            margin-bottom: 20px;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+            display: flex;
+            align-items: flex-start;
+            transition: transform 0.2s;
+        }
+        .schedule-item:hover {
+            transform: translateY(-5px);
+        }
+        .time {
+            font-weight: bold;
+            color: #007BFF;
+            flex: 0 0 120px;
+        }
+        .talk-details {
+            flex-grow: 1;
+        }
+        .talk-details h2 {
+            font-size: 1.5em;
+            margin: 0 0 10px 0;
+        }
+        .speakers {
+            font-style: italic;
+            color: #555;
+            margin-bottom: 15px;
+        }
+        .description {
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+        .category {
+            display: inline-block;
+            background-color: #e9ecef;
+            color: #495057;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.9em;
+            margin-right: 5px;
+        }
+        .break {
+            text-align: center;
+            font-style: italic;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>Tech Talks Today</h1>
+            <p>A one-day event for the curious minds of the tech industry.</p>
+        </header>
+
+        <div class="search-container">
+            <input type="text" id="search-box" placeholder="Search by category (e.g., AI, Web, Cloud)...">
+        </div>
+
+        <ul class="schedule" id="schedule-list">
+            <!-- Schedule items will be inserted here by JavaScript -->
+        </ul>
+    </div>
+
+    <script>
+        const talks = [
+            {
+                time: "10:00 AM - 11:00 AM",
+                title: "The Future of Artificial Intelligence",
+                speakers: ["Alex Doe"],
+                category: ["AI", "Machine Learning"],
+                description: "A deep dive into the latest advancements in AI and what we can expect in the next decade."
+            },
+            {
+                time: "11:10 AM - 12:10 PM",
+                title: "Modern Web Development with Serverless",
+                speakers: ["Jane Smith", "John Appleseed"],
+                category: ["Web", "Serverless", "JavaScript"],
+                description: "Learn how to build and deploy scalable web applications without managing servers."
+            },
+            {
+                time: "12:10 PM - 01:10 PM",
+                isBreak: true,
+                title: "Lunch Break"
+            },
+            {
+                time: "01:10 PM - 02:10 PM",
+                title: "Cloud-Native Security Best Practices",
+                speakers: ["Sam Wilson"],
+                category: ["Cloud", "Security"],
+                description: "Discover the best practices for securing your cloud-native applications and infrastructure."
+            },
+            {
+                time: "02:20 PM - 03:20 PM",
+                title: "The Power of Quantum Computing",
+                speakers: ["Bucky Barnes"],
+                category: ["Quantum", "Computing"],
+                description: "An introduction to the mind-bending world of quantum computing and its potential impact."
+            },
+            {
+                time: "03:30 PM - 04:30 PM",
+                title: "Building Real-time Applications with WebSockets",
+                speakers: ["Natasha Romanoff"],
+                category: ["Web", "Real-time"],
+                description: "Explore the WebSocket protocol and learn how to build interactive, real-time web applications."
+            },
+            {
+                time: "04:40 PM - 05:40 PM",
+                title: "Data Visualization for Everyone",
+                speakers: ["Wanda Maximoff", "Vision"],
+                category: ["Data", "Visualization", "JavaScript"],
+                description: "Learn the principles of effective data visualization and how to create compelling charts and graphs."
+            }
+        ];
+
+        const scheduleList = document.getElementById('schedule-list');
+        const searchBox = document.getElementById('search-box');
+
+        function renderSchedule(filter = '') {
+            scheduleList.innerHTML = '';
+            const normalizedFilter = filter.toLowerCase().trim();
+
+            talks.forEach(talk => {
+                if (talk.isBreak) {
+                     if (!normalizedFilter) {
+                        const li = document.createElement('li');
+                        li.className = 'schedule-item break';
+                        li.innerHTML = `<div class="time">${talk.time}</div><div class="talk-details"><h2>${talk.title}</h2></div>`;
+                        scheduleList.appendChild(li);
+                     }
+                    return;
+                }
+
+                const matchesFilter = normalizedFilter === '' || talk.category.some(cat => cat.toLowerCase().includes(normalizedFilter));
+
+                if (matchesFilter) {
+                    const li = document.createElement('li');
+                    li.className = 'schedule-item';
+
+                    let categoriesHTML = talk.category.map(cat => `<span class="category">${cat}</span>`).join('');
+
+                    li.innerHTML = `
+                        <div class="time">${talk.time}</div>
+                        <div class="talk-details">
+                            <h2>${talk.title}</h2>
+                            <div class="speakers">${talk.speakers.join(', ')}</div>
+                            <div class="description">${talk.description}</div>
+                            <div>${categoriesHTML}</div>
+                        </div>
+                    `;
+                    scheduleList.appendChild(li);
+                }
+            });
+        }
+
+        searchBox.addEventListener('input', () => {
+            renderSchedule(searchBox.value);
+        });
+
+        // Initial render
+        renderSchedule();
+    </script>
+
+</body>
+</html>
